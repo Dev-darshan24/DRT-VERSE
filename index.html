@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DRT-VERSE | Your Vision. Our Verse.</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+
+/* THEME VARIABLES */
+[data-theme="light"]{
+  --bg:#eeeaf4;--bg2:#e8e3f0;--bg3:#f0ecf8;
+  --glass:rgba(255,255,255,0.45);--glass-border:rgba(255,255,255,0.75);
+  --text:#12082a;--text-muted:#6b5f80;
+  --card-bg:rgba(255,255,255,0.5);
+  --nav-bg:rgba(238,234,244,0.3);
+  --footer-bg:#12082a;
+}
+[data-theme="dark"]{
+  --bg:#0d0a18;--bg2:#130f22;--bg3:#0f0c1e;
+  --glass:rgba(255,255,255,0.05);--glass-border:rgba(255,255,255,0.1);
+  --text:#f0eaff;--text-muted:#9d8fc0;
+  --card-bg:rgba(255,255,255,0.04);
+  --nav-bg:rgba(13,10,24,0.6);
+  --footer-bg:#080612;
+}
+
+:root{
+  --purple:#6d3aee;--purple-light:#a78bfa;
+  --purple-soft:rgba(109,58,238,0.12);
+  --purple-deep:#3b0fa0;
+}
+
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Manrope',sans-serif;
+  background:var(--bg); color:var(--text);
+  overflow-x:hidden;
+  transition:background .4s ease,color .4s ease;
+}
+
+/* Layout helpers (moved from inline styles) */
+.sec-sub{margin:0 auto;}
+
+.rev[style*="text-align:center"]{text-align:center;}
+
+.section-eyebrow[style*="justify-content:center"]{justify-content:center;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--purple-light);border-radius:10px;}
+
+/* SCROLL PROGRESS */
+#progress{
+  position:fixed;top:0;left:0;height:3px;
+  background:linear-gradient(90deg,var(--purple),var(--purple-light));
+  z-index:9999;width:0%;transition:width .1s linear;
+}
+
+/* LOADER */
+#loader{
+  position:fixed;inset:0;z-index:10000;
+  background:#0d0a18;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:1.5rem;
+}
+.loader-logo{
+  font-family:'Manrope',sans-serif;font-weight:800;
+  font-size:3rem;color:white;letter-spacing:-.02em;
+  opacity:0;animation:loaderFadeIn .6s .3s ease forwards;
+}
+.loader-logo span{color:var(--purple-light);}
+.loader-tag{
+  font-size:.82rem;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,255,255,.4);
+  opacity:0;animation:loaderFadeIn .6s .6s ease forwards;
+}
+.loader-bar-wrap{width:200px;height:2px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;opacity:0;animation:loaderFadeIn .6s .8s ease forwards;}
+.loader-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--purple),var(--purple-light));border-radius:2px;animation:loadBar 1.8s 1s ease forwards;}
+@keyframes loadBar{0%{width:0%}100%{width:100%}}
+@keyframes loaderFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+#loader.hide{animation:loaderOut .5s ease forwards;}
+@keyframes loaderOut{from{opacity:1}to{opacity:0;pointer-events:none;visibility:hidden;}}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;width:100%;z-index:200;
+  padding:1.1rem 5%;
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--nav-bg);
+  backdrop-filter:blur(24px) saturate(180%);
+  border-bottom:1px solid var(--glass-border);
+  transition:background .4s;
+  opacity:0;animation:navIn .8s .3s ease forwards;
+}
+@keyframes navIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+.logo{font-weight:800;font-size:1.3rem;color:var(--text);text-decoration:none;letter-spacing:-.01em;}
+.logo span{color:var(--purple);}
+.nav-links{display:flex;gap:2.2rem;list-style:none;align-items:center;}
+.nav-links a{font-size:.82rem;font-weight:500;letter-spacing:.04em;text-decoration:none;color:var(--text-muted);transition:color .25s;}
+.nav-links a:hover{color:var(--purple);}
+.nav-right{display:flex;align-items:center;gap:1rem;}
+
+/* THEME TOGGLE */
+.theme-toggle{
+  width:44px;height:24px;border-radius:100px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  position:relative;cursor:pointer;transition:background .3s;
+  flex-shrink:0;
+}
+.theme-toggle::after{
+  content:'';position:absolute;
+  width:18px;height:18px;border-radius:50%;
+  background:var(--purple);top:2px;left:3px;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1),background .3s;
+  box-shadow:0 2px 6px rgba(109,58,238,.4);
+}
+[data-theme="dark"] .theme-toggle::after{transform:translateX(20px);background:var(--purple-light);}
+.theme-icon{position:absolute;top:50%;font-size:.7rem;transition:opacity .3s;}
+.theme-icon.sun{left:5px;transform:translateY(-50%);opacity:1;}
+.theme-icon.moon{right:5px;transform:translateY(-50%);opacity:0;}
+[data-theme="dark"] .theme-icon.sun{opacity:0;}
+[data-theme="dark"] .theme-icon.moon{opacity:1;}
+
+.nav-btn{
+  background:var(--purple);color:white;
+  padding:.55rem 1.4rem;border-radius:100px;
+  font-size:.8rem;font-weight:600;text-decoration:none;
+  transition:all .3s;box-shadow:0 4px 16px rgba(109,58,238,.3);
+}
+.nav-btn:hover{background:var(--purple-deep);transform:translateY(-1px);box-shadow:0 6px 24px rgba(109,58,238,.4);}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:grid;grid-template-columns:1fr 1fr;
+  align-items:center;padding:7rem 5% 4rem;
+  position:relative;overflow:hidden;gap:2rem;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 70% 80% at 70% 50%,rgba(200,185,230,0.5) 0%,transparent 65%),
+    radial-gradient(ellipse 40% 40% at 15% 80%,rgba(167,139,250,0.12) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 50% at 80% 10%,rgba(255,255,255,0.4) 0%,transparent 60%);
+  z-index:0;transition:opacity .4s;
+}
+[data-theme="dark"] .hero::before{
+  background:
+    radial-gradient(ellipse 70% 80% at 70% 50%,rgba(109,58,238,0.15) 0%,transparent 65%),
+    radial-gradient(ellipse 40% 40% at 15% 80%,rgba(109,58,238,0.08) 0%,transparent 60%);
+}
+.hero-grid{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.hero-grid svg{width:100%;height:100%;opacity:.2;}
+[data-theme="dark"] .hero-grid svg{opacity:.12;}
+.speckles{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(circle,rgba(109,58,238,0.2) 1px,transparent 1px);
+  background-size:28px 28px;opacity:.3;
+  mask-image:radial-gradient(ellipse 80% 80% at 60% 50%,black 20%,transparent 80%);
+}
+
+.hero-left{position:relative;z-index:2;}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--glass);border:1px solid var(--glass-border);
+  backdrop-filter:blur(8px);
+  padding:.4rem 1rem;border-radius:100px;
+  font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--purple);margin-bottom:1.8rem;
+  opacity:0;animation:fadeUp .7s .4s ease forwards;
+}
+.hero-badge::before{content:'';width:6px;height:6px;background:var(--purple);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.6)}}
+
+.hero h1{
+  font-size:clamp(2.6rem,5.2vw,5rem);font-weight:800;
+  line-height:1.05;letter-spacing:-.03em;color:var(--text);
+  margin-bottom:1.5rem;
+  opacity:0;animation:fadeUp .9s .55s ease forwards;
+}
+.hero h1 .accent{color:var(--purple);}
+/* Typing cursor */
+.typing-cursor{display:inline-block;width:3px;height:.85em;background:var(--purple);margin-left:4px;vertical-align:middle;animation:blink .8s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.hero-sub{
+  font-size:.98rem;font-weight:400;color:var(--text-muted);
+  line-height:1.75;max-width:400px;margin-bottom:2.4rem;
+  opacity:0;animation:fadeUp .9s .7s ease forwards;
+}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;opacity:0;animation:fadeUp .9s .85s ease forwards;}
+.btn-primary{
+  background:var(--purple);color:white;padding:.9rem 2.2rem;border-radius:100px;
+  font-size:.88rem;font-weight:600;text-decoration:none;
+  box-shadow:0 6px 28px rgba(109,58,238,.35);transition:all .3s;
+}
+.btn-primary:hover{background:var(--purple-deep);transform:translateY(-2px);box-shadow:0 10px 36px rgba(109,58,238,.45);}
+.btn-ghost{
+  background:var(--glass);border:1px solid var(--glass-border);
+  backdrop-filter:blur(8px);color:var(--text);padding:.9rem 2.2rem;
+  border-radius:100px;font-size:.88rem;font-weight:500;text-decoration:none;transition:all .3s;
+}
+.btn-ghost:hover{border-color:var(--purple);color:var(--purple);transform:translateY(-2px);}
+
+/* 3D CUBE */
+.hero-right{
+  position:relative;z-index:2;display:flex;align-items:center;justify-content:center;
+  height:520px;opacity:0;animation:fadeIn 1.2s .6s ease forwards;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.cube-scene{
+  width:200px;height:200px;perspective:600px;
+  animation:cubeFloat 6s ease-in-out infinite;
+}
+@keyframes cubeFloat{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-22px);}
+}
+.cube{
+  width:200px;height:200px;position:relative;transform-style:preserve-3d;
+  animation:cubeRotate 10s linear infinite;
+}
+@keyframes cubeRotate{
+  0%{transform:rotateX(20deg) rotateY(0deg);}
+  100%{transform:rotateX(20deg) rotateY(360deg);}
+}
+.cube-face{
+  position:absolute;width:200px;height:200px;
+  border:1.5px solid rgba(167,139,250,0.5);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:rgba(167,139,250,0.7);
+}
+.face-front{
+  transform:translateZ(100px);
+  background:linear-gradient(135deg,rgba(255,255,255,0.18),rgba(200,185,230,0.08));
+  backdrop-filter:blur(12px);
+}
+.face-back{transform:rotateY(180deg) translateZ(100px);background:linear-gradient(135deg,rgba(109,58,238,0.1),rgba(255,255,255,0.05));}
+.face-left{transform:rotateY(-90deg) translateZ(100px);background:linear-gradient(135deg,rgba(167,139,250,0.1),rgba(255,255,255,0.05));}
+.face-right{transform:rotateY(90deg) translateZ(100px);background:linear-gradient(135deg,rgba(109,58,238,0.08),rgba(255,255,255,0.05));}
+.face-top{transform:rotateX(90deg) translateZ(100px);background:linear-gradient(135deg,rgba(255,255,255,0.25),rgba(200,185,230,0.1));}
+.face-bottom{transform:rotateX(-90deg) translateZ(100px);background:linear-gradient(135deg,rgba(109,58,238,0.06),rgba(255,255,255,0.02));}
+
+.cube-shadow{
+  position:absolute;bottom:-60px;left:50%;transform:translateX(-50%);
+  width:200px;height:30px;
+  background:radial-gradient(ellipse,rgba(109,58,238,0.2) 0%,transparent 70%);
+  border-radius:50%;animation:shadowPulse 6s ease-in-out infinite;
+}
+@keyframes shadowPulse{0%,100%{transform:translateX(-50%) scaleX(1);opacity:.7;}50%{transform:translateX(-50%) scaleX(.8);opacity:.35;}}
+
+/* Orbit particles */
+.orbit{position:absolute;width:320px;height:320px;border-radius:50%;border:1px dashed rgba(167,139,250,0.2);animation:orbitSpin 12s linear infinite;}
+.orbit-dot{width:8px;height:8px;background:radial-gradient(circle,#ffe066,#d4a017);border-radius:50%;position:absolute;top:-4px;left:50%;transform:translateX(-50%);box-shadow:0 4px 12px rgba(200,150,0,.5);}
+.orbit2{position:absolute;width:420px;height:420px;border-radius:50%;border:1px dashed rgba(167,139,250,0.1);animation:orbitSpin 18s linear infinite reverse;}
+.orbit2-dot{width:6px;height:6px;background:var(--purple-light);border-radius:50%;position:absolute;bottom:-3px;right:30%;box-shadow:0 2px 8px rgba(167,139,250,.6);}
+@keyframes orbitSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+.light-beam{
+  position:absolute;width:180px;height:360px;
+  background:linear-gradient(to bottom,rgba(255,255,255,0.5),transparent);
+  top:-40px;left:50%;transform:translateX(-50%) rotate(-8deg);
+  filter:blur(28px);opacity:.4;pointer-events:none;
+}
+[data-theme="dark"] .light-beam{background:linear-gradient(to bottom,rgba(109,58,238,0.3),transparent);}
+
+/* Floating tag badges on hero */
+.hero-tag{
+  position:absolute;background:var(--glass);border:1px solid var(--glass-border);
+  backdrop-filter:blur(10px);padding:.5rem 1rem;border-radius:100px;
+  font-size:.75rem;font-weight:600;color:var(--text);white-space:nowrap;
+}
+.htag1{top:15%;left:-10%;animation:tagFloat 5s ease-in-out infinite;}
+.htag2{bottom:20%;right:-5%;animation:tagFloat 6s ease-in-out infinite reverse;}
+.htag3{top:55%;left:-15%;animation:tagFloat 7s ease-in-out infinite .5s;}
+@keyframes tagFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+/* STATS BAR */
+.stats-bar{
+  display:flex;justify-content:center;gap:4rem;padding:1.8rem 5%;
+  background:var(--glass);backdrop-filter:blur(20px);
+  border-top:1px solid var(--glass-border);border-bottom:1px solid var(--glass-border);
+  flex-wrap:wrap;
+}
+.stat-item{text-align:center;}
+.stat-num{font-size:1.8rem;font-weight:800;color:var(--purple);}
+.stat-label{font-size:.76rem;color:var(--text-muted);margin-top:.2rem;}
+
+/* SECTIONS */
+section.pad{padding:6rem 5%;}
+.section-eyebrow{
+  font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--purple);display:flex;align-items:center;gap:.7rem;margin-bottom:1rem;
+}
+.section-eyebrow::after{content:'';flex:1;height:1px;background:rgba(109,58,238,.2);max-width:60px;}
+h2.sec-title{
+  font-size:clamp(1.9rem,3.8vw,3.2rem);font-weight:800;
+  letter-spacing:-.03em;line-height:1.08;margin-bottom:1rem;
+}
+h2.sec-title em{font-style:normal;color:var(--purple);}
+.sec-sub{font-size:.93rem;color:var(--text-muted);line-height:1.75;max-width:460px;}
+
+/* SERVICES */
+#services{background:linear-gradient(160deg,var(--bg3) 0%,var(--bg2) 100%);}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:1.2rem;margin-top:3.5rem;}
+.svc-card{
+  background:var(--card-bg);border:1px solid var(--glass-border);
+  backdrop-filter:blur(12px);border-radius:22px;
+  padding:2.2rem 1.8rem;position:relative;overflow:hidden;
+  transition:all .4s cubic-bezier(.25,.46,.45,.94);
+  opacity:0;transform:translateY(36px);
+}
+.svc-card.vis{opacity:1;transform:translateY(0);}
+.svc-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(109,58,238,0.06),transparent);opacity:0;transition:opacity .4s;}
+.svc-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(109,58,238,.12);}
+.svc-card:hover::before{opacity:1;}
+.svc-icon{width:50px;height:50px;border-radius:14px;background:rgba(109,58,238,.1);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.4rem;transition:transform .3s;}
+.svc-card:hover .svc-icon{transform:scale(1.1) rotate(-6deg);}
+.svc-num{position:absolute;top:1.4rem;right:1.6rem;font-size:2.8rem;font-weight:800;color:rgba(109,58,238,.06);line-height:1;}
+.svc-card h3{font-size:1.05rem;font-weight:700;margin-bottom:.6rem;}
+.svc-card p{font-size:.86rem;color:var(--text-muted);line-height:1.7;}
+.svc-link{display:inline-block;margin-top:1.1rem;font-size:.76rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--purple);}
+
+/* HOW I WORK */
+#process{background:var(--bg);padding:6rem 5%;}
+.process-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-top:3.5rem;position:relative;}
+.process-grid::before{
+  content:'';position:absolute;top:40px;left:10%;right:10%;height:1px;
+  background:linear-gradient(to right,transparent,rgba(109,58,238,.2),transparent);
+}
+.proc-card{
+  background:var(--card-bg);border:1px solid var(--glass-border);
+  backdrop-filter:blur(12px);border-radius:20px;padding:2rem 1.6rem;
+  text-align:center;transition:all .4s ease;
+  opacity:0;transform:translateY(32px);position:relative;
+}
+.proc-card.vis{opacity:1;transform:translateY(0);}
+.proc-card:hover{transform:translateY(-5px);box-shadow:0 16px 50px rgba(109,58,238,.1);}
+.proc-num{
+  width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--purple-light));
+  color:white;font-weight:800;font-size:1.1rem;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 1.2rem;
+  box-shadow:0 6px 20px rgba(109,58,238,.3);
+}
+.proc-card h3{font-size:1rem;font-weight:700;margin-bottom:.5rem;}
+.proc-card p{font-size:.84rem;color:var(--text-muted);line-height:1.65;}
+
+/* PORTFOLIO — CATEGORIZED */
+#portfolio{background:var(--bg3);}
+.port-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3rem;flex-wrap:wrap;gap:1rem;}
+
+/* Category block */
+.port-category{margin-bottom:3.5rem;}
+.port-cat-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:1.2rem;padding-bottom:.7rem;
+  border-bottom:1.5px solid var(--glass-border);
+}
+.port-cat-title{font-size:1.05rem;font-weight:700;letter-spacing:-.01em;color:var(--text);}
+.port-view-all{
+  display:flex;align-items:center;gap:.5rem;
+  font-size:.78rem;font-weight:600;color:var(--text-muted);
+  text-decoration:none;cursor:pointer;transition:color .2s;
+  background:none;border:none;
+}
+.port-view-all:hover{color:var(--purple);}
+.port-view-all .va-circle{
+  width:32px;height:32px;border-radius:50%;
+  border:1.5px solid var(--glass-border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;transition:all .2s;background:var(--glass);
+}
+.port-view-all:hover .va-circle{background:var(--purple);border-color:var(--purple);color:white;}
+
+/* ── Graphics: 4 portrait cards ── */
+.port-grid-portrait{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1rem;
+}
+.port-card-portrait{
+  border-radius:16px;overflow:hidden;position:relative;
+  aspect-ratio:3/4;cursor:pointer;
+  transition:transform .35s ease,box-shadow .35s;
+  box-shadow:0 2px 12px rgba(0,0,0,.08);
+  border:none;padding:0;
+}
+.port-card-portrait:hover{transform:translateY(-5px);box-shadow:0 12px 32px rgba(109,58,238,.18);}
+.port-card-portrait .port-card-inner img{
+  transition:transform .45s cubic-bezier(.25,.46,.45,.94);
+}
+.port-card-portrait:hover .port-card-inner img{
+  transform:scale(1.08);
+  width:100%;height:100%;object-fit:cover;
+  margin:0;padding:0;border:none;outline:none;
+}
+
+/* ── Website: 3 landscape cards with dots ── */
+.port-grid-landscape{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1rem;
+}
+.port-card-landscape{
+  border-radius:16px;overflow:hidden;position:relative;
+  aspect-ratio:16/9;cursor:pointer;
+  transition:transform .35s ease,box-shadow .35s;
+  box-shadow:0 2px 12px rgba(0,0,0,.08);
+}
+.port-card-landscape:hover{transform:translateY(-5px);box-shadow:0 12px 32px rgba(109,58,238,.18);}
+.port-dots{display:flex;gap:6px;justify-content:center;margin-top:.8rem;}
+.port-dot{width:7px;height:7px;border-radius:50%;background:var(--glass-border);transition:background .2s;}
+.port-dot.active{background:var(--purple);}
+
+/* ── App Design: 6 circle cards ── */
+.port-grid-circles{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:1rem;
+}
+.port-card-circle{
+  display:flex;flex-direction:column;align-items:center;gap:.6rem;
+  cursor:pointer;
+}
+.port-circle-img{
+  width:100%;aspect-ratio:1;border-radius:50%;overflow:hidden;
+  transition:transform .3s,box-shadow .3s;
+  box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+.port-card-circle:hover .port-circle-img{transform:scale(1.06);box-shadow:0 8px 24px rgba(109,58,238,.2);}
+.port-circle-label{font-size:.7rem;font-weight:600;color:var(--text-muted);text-align:center;line-height:1.3;}
+.port-circle-label span{display:block;font-size:.65rem;font-weight:400;color:var(--text-muted);opacity:.7;}
+
+/* ── PPT: 3 landscape cards ── */
+.port-grid-ppt{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1rem;
+}
+.port-card-ppt{
+  border-radius:14px;overflow:hidden;position:relative;
+  aspect-ratio:4/3;cursor:pointer;
+  transition:transform .35s ease,box-shadow .35s;
+  box-shadow:0 2px 12px rgba(0,0,0,.08);
+}
+.port-card-ppt:hover{transform:translateY(-5px);box-shadow:0 12px 32px rgba(109,58,238,.18);}
+
+/* Shared card inner */
+.port-card-inner{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.2rem;position:relative;overflow:hidden;
+}
+.port-card-inner img{
+  width:100%;height:100%;object-fit:cover;position:absolute;inset:0;
+  margin:0;padding:0;border:none;outline:none;display:block;
+  transition:transform .45s cubic-bezier(.25,.46,.45,.94);
+}
+.port-card-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(58,20,140,.88),transparent 55%);
+  opacity:0;transition:opacity .3s;
+  display:flex;align-items:flex-end;padding:1rem;
+}
+.port-card-portrait:hover .port-card-overlay,
+.port-card-landscape:hover .port-card-overlay,
+.port-card-ppt:hover .port-card-overlay{opacity:1;}
+.port-card-overlay h5{font-size:.82rem;font-weight:700;color:white;margin:0;}
+.port-card-overlay span{font-size:.7rem;color:rgba(255,255,255,.65);}
+
+/* Gradient placeholders when no image */
+.pg1{background:linear-gradient(135deg,#c4b5fd,#818cf8);}
+.pg2{background:linear-gradient(135deg,#ddd6fe,#a78bfa);}
+.pg3{background:linear-gradient(135deg,#ede9fe,#c4b5fd);}
+.pg4{background:linear-gradient(135deg,#f3e8ff,#d8b4fe);}
+.pg5{background:linear-gradient(135deg,#7c3aed,#a855f7);}
+.pg6{background:linear-gradient(135deg,#6d28d9,#8b5cf6);}
+.pg7{background:linear-gradient(135deg,#4f46e5,#7c3aed);}
+.pg8{background:linear-gradient(135deg,#312e81,#4f46e5);}
+.pg9{background:linear-gradient(135deg,#1e1b4b,#312e81);}
+
+/* Responsive */
+@media(max-width:900px){
+  .port-grid-portrait{grid-template-columns:repeat(2,1fr);}
+  .port-grid-circles{grid-template-columns:repeat(3,1fr);}
+  .port-grid-landscape,.port-grid-ppt{grid-template-columns:repeat(2,1fr);}
+  .port-grid-landscape .port-card-landscape:last-child,.port-grid-ppt .port-card-ppt:last-child{display:none;}
+}
+@media(max-width:560px){
+  .port-grid-portrait{grid-template-columns:repeat(2,1fr);}
+  .port-grid-circles{grid-template-columns:repeat(3,1fr);}
+  .port-grid-landscape,.port-grid-ppt{grid-template-columns:1fr 1fr;}
+}
+
+/* PRODUCTS */
+#products{background:var(--bg2);}
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:1.2rem;margin-top:3.5rem;}
+.prod-card{
+  background:var(--card-bg);border:1px solid var(--glass-border);
+  backdrop-filter:blur(12px);border-radius:20px;overflow:hidden;
+  transition:all .35s ease;opacity:0;transform:translateY(28px);
+}
+.prod-card.vis{opacity:1;transform:translateY(0);}
+.prod-card:hover{transform:translateY(-5px);box-shadow:0 16px 50px rgba(109,58,238,.12);}
+.prod-thumb{height:170px;display:flex;align-items:center;justify-content:center;font-size:3rem;}
+.pt1{background:linear-gradient(135deg,#f5f3ff,#ddd6fe);}
+.pt2{background:linear-gradient(135deg,#faf5ff,#e9d5ff);}
+.pt3{background:linear-gradient(135deg,#ede9fe,#c4b5fd);}
+.pt4{background:linear-gradient(135deg,#f3e8ff,#d8b4fe);}
+.prod-body{padding:1.4rem;}
+.prod-body h4{font-size:.98rem;font-weight:700;margin-bottom:.35rem;}
+.prod-body p{font-size:.82rem;color:var(--text-muted);line-height:1.5;margin-bottom:1rem;}
+.prod-foot{display:flex;justify-content:space-between;align-items:center;}
+.price{font-size:1.1rem;font-weight:800;color:var(--purple);}
+.btn-buy{
+  background:rgba(109,58,238,.1);color:var(--purple);
+  border:none;padding:.42rem .95rem;border-radius:100px;
+  font-size:.75rem;font-weight:700;cursor:pointer;
+  font-family:'Manrope',sans-serif;transition:all .25s;
+}
+.btn-buy:hover{background:var(--purple);color:white;}
+
+/* ABOUT */
+#about{background:var(--bg);display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;padding:6rem 5%;}
+.about-visual{position:relative;height:460px;}
+.avc-main{
+  position:absolute;width:72%;height:68%;top:0;left:0;
+  background:linear-gradient(135deg,#ddd6fe,#c4b5fd);
+  border-radius:24px;display:flex;align-items:center;justify-content:center;
+  font-size:4rem;font-weight:800;color:var(--purple-deep);overflow:hidden;
+  box-shadow:0 20px 60px rgba(109,58,238,.15);
+}
+.avc-main::after{content:'D';font-size:11rem;opacity:.12;position:absolute;bottom:-20px;right:-10px;}
+.avc-stats{
+  position:absolute;right:0;bottom:0;width:52%;
+  background:var(--card-bg);border:1px solid var(--glass-border);
+  backdrop-filter:blur(16px);border-radius:20px;padding:1.6rem;
+  box-shadow:0 10px 40px rgba(0,0,0,.06);
+}
+.as{margin-bottom:1.1rem;}
+.as:last-child{margin-bottom:0;}
+.as-n{font-size:1.7rem;font-weight:800;color:var(--purple);}
+.as-l{font-size:.78rem;color:var(--text-muted);}
+.avc-dot{position:absolute;top:45%;left:58%;width:70px;height:70px;background:var(--purple);border-radius:50%;opacity:.07;animation:cubeFloat 7s ease-in-out infinite;}
+.about-text .sec-sub{margin-bottom:1.6rem;}
+.about-feats{display:flex;flex-direction:column;gap:.9rem;margin-top:1.8rem;}
+.af{display:flex;align-items:flex-start;gap:.9rem;}
+.af-dot{width:7px;height:7px;background:var(--purple);border-radius:50%;margin-top:.45rem;flex-shrink:0;}
+.af p{font-size:.88rem;color:var(--text-muted);line-height:1.65;}
+.af strong{color:var(--text);}
+
+/* SOCIAL */
+#social{background:var(--bg3);padding:5rem 5%;text-align:center;}
+.social-grid{display:flex;justify-content:center;gap:1.2rem;flex-wrap:wrap;margin-top:3rem;}
+.soc-card{
+  display:flex;align-items:center;gap:.8rem;
+  background:var(--card-bg);border:1px solid var(--glass-border);
+  backdrop-filter:blur(12px);border-radius:100px;
+  padding:.8rem 1.6rem;text-decoration:none;color:var(--text);
+  font-size:.88rem;font-weight:600;transition:all .3s;
+  opacity:0;transform:translateY(20px);
+}
+.soc-card.vis{opacity:1;transform:translateY(0);}
+.soc-card:hover{background:var(--purple);color:white;transform:translateY(-3px);box-shadow:0 8px 28px rgba(109,58,238,.3);}
+.soc-icon{font-size:1.2rem;}
+
+/* FAQ */
+#faq{background:var(--bg2);padding:6rem 5%;}
+.faq-wrap{max-width:720px;margin:3rem auto 0;}
+.faq-item{
+  border-bottom:1px solid var(--glass-border);
+  opacity:0;transform:translateY(20px);transition:all .5s ease;
+}
+.faq-item.vis{opacity:1;transform:translateY(0);}
+.faq-q{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1.3rem 0;cursor:pointer;gap:1rem;
+}
+.faq-q h4{font-size:.98rem;font-weight:600;color:var(--text);}
+.faq-icon{
+  width:28px;height:28px;border-radius:50%;
+  background:rgba(109,58,238,.1);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--purple);font-size:1.1rem;flex-shrink:0;
+  transition:transform .3s,background .3s;font-family:'Manrope',sans-serif;
+}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:var(--purple);color:white;}
+.faq-a{
+  font-size:.88rem;color:var(--text-muted);line-height:1.75;
+  max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;
+}
+.faq-item.open .faq-a{max-height:200px;padding-bottom:1.2rem;}
+
+/* CONTACT */
+#contact{background:linear-gradient(160deg,var(--bg3),var(--bg2));padding:6rem 5%;}
+.contact-wrap{display:grid;grid-template-columns:1fr 1.3fr;gap:5rem;align-items:start;margin-top:3.5rem;}
+.ci h3{font-size:1.5rem;font-weight:700;margin-bottom:.9rem;}
+.ci p{font-size:.87rem;color:var(--text-muted);line-height:1.8;margin-bottom:2rem;}
+.ci-detail{display:flex;flex-direction:column;gap:.9rem;}
+.ci-item{display:flex;align-items:center;gap:.9rem;}
+.ci-icon{width:38px;height:38px;background:rgba(109,58,238,.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;}
+.ci-item span{font-size:.84rem;color:var(--text-muted);}
+.cf{background:var(--card-bg);border:1px solid var(--glass-border);backdrop-filter:blur(16px);border-radius:24px;padding:2.4rem;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.fg{margin-bottom:1rem;}
+.fg label{display:block;font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.45rem;}
+.fg input,.fg textarea,.fg select{
+  width:100%;background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:10px;padding:.8rem 1rem;
+  font-family:'Manrope',sans-serif;font-size:.87rem;color:var(--text);
+  outline:none;transition:all .3s;appearance:none;backdrop-filter:blur(8px);
+}
+.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--purple-light);box-shadow:0 0 0 3px rgba(109,58,238,.08);}
+.fg textarea{resize:none;height:110px;}
+.btn-submit{
+  width:100%;background:var(--purple);color:white;border:none;
+  padding:.95rem;border-radius:12px;font-family:'Manrope',sans-serif;
+  font-size:.92rem;font-weight:700;cursor:pointer;transition:all .3s;
+  box-shadow:0 6px 24px rgba(109,58,238,.3);
+}
+.btn-submit:hover{background:var(--purple-deep);transform:translateY(-2px);box-shadow:0 10px 32px rgba(109,58,238,.4);}
+
+/* FOOTER */
+footer{
+  background:var(--footer-bg);color:rgba(255,255,255,.45);
+  padding:3rem 5%;transition:background .4s;
+}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:2rem;margin-bottom:2.5rem;}
+.fl{font-weight:800;font-size:1.15rem;color:white;display:block;margin-bottom:.4rem;}
+.fl span{color:var(--purple-light);}
+.footer-tagline{font-size:.8rem;opacity:.5;font-style:italic;}
+.footer-links-col h5{font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:1rem;}
+.footer-links-col ul{list-style:none;display:flex;flex-direction:column;gap:.6rem;}
+.footer-links-col a{font-size:.83rem;color:rgba(255,255,255,.4);text-decoration:none;transition:color .25s;}
+.footer-links-col a:hover{color:var(--purple-light);}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+footer p{font-size:.78rem;}
+
+/* FLOATING BUTTONS */
+.float-btns{position:fixed;right:1.5rem;bottom:1.8rem;display:flex;flex-direction:column;gap:.7rem;z-index:500;}
+.float-btn{
+  width:48px;height:48px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;cursor:pointer;border:none;
+  transition:all .3s;box-shadow:0 4px 16px rgba(0,0,0,.15);
+  text-decoration:none;
+}
+.wa-btn{background:#25D366;color:white;}
+.wa-btn:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(37,211,102,.4);}
+.top-btn{background:var(--purple);color:white;opacity:0;pointer-events:none;transition:all .3s;}
+.top-btn.show{opacity:1;pointer-events:all;}
+.top-btn:hover{transform:scale(1.1);background:var(--purple-deep);}
+
+/* ─── CHATBOT VARIABLES ─── */
+:root {
+  --cb-bg: #050508;
+  --cb-surface: rgba(255,255,255,0.04);
+  --cb-surface2: rgba(255,255,255,0.07);
+  --cb-border: rgba(255,255,255,0.08);
+  --cb-border2: rgba(255,255,255,0.14);
+  --cb-text: #f0eeff;
+  --cb-text-muted: rgba(240,238,255,0.45);
+  --cb-accent: #7c5cfc;
+  --cb-accent2: #b06cf8;
+  --cb-accent-glow: rgba(124,92,252,0.35);
+  --cb-green: #3dd68c;
+  --cb-green-glow: rgba(61,214,140,0.25);
+  --cb-red: #ff6b6b;
+  --cb-gold: #f5c842;
+  --cb-radius: 18px;
+  --cb-mono: 'JetBrains Mono', monospace;
+  --cb-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px var(--cb-border);
+}
+#chat-trigger {
+  position: fixed; bottom: 32px; left: 32px; z-index: 500;
+  cursor: pointer; display: flex; align-items: center; gap: 10px;
+  padding: 14px 22px;
+  background: linear-gradient(135deg, var(--cb-accent), var(--cb-accent2));
+  border: none; border-radius: 50px; color: #fff;
+  font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600;
+  box-shadow: 0 8px 32px var(--cb-accent-glow), 0 0 0 1px rgba(255,255,255,0.1);
+  transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), box-shadow 0.25s;
+  letter-spacing: 0.01em;
+}
+#chat-trigger:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 14px 40px var(--cb-accent-glow); }
+#chat-trigger.hidden { display: none; }
+.cb-trigger-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--cb-green); box-shadow: 0 0 0 3px var(--cb-green-glow);
+  animation: cbPulse 2s infinite;
+}
+@keyframes cbPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(.85)} }
+#chat-window {
+  position: fixed; bottom: 32px; left: 32px;
+  width: 400px; max-height: 620px; z-index: 500;
+  display: none; flex-direction: column;
+  background: rgba(10,9,20,0.96);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border-radius: var(--cb-radius);
+  border: 1px solid var(--cb-border2);
+  box-shadow: var(--cb-shadow), 0 0 60px rgba(124,92,252,0.1);
+  overflow: hidden; transform-origin: bottom left;
+  font-family: 'Sora', sans-serif;
+}
+#chat-window.cb-open { animation: cbWinIn 0.4s cubic-bezier(.34,1.56,.64,1) forwards; }
+#chat-window.cb-closing { animation: cbWinOut 0.25s cubic-bezier(.4,0,.2,1) forwards; }
+@keyframes cbWinIn { from{opacity:0;transform:scale(.75) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+@keyframes cbWinOut { from{opacity:1;transform:scale(1) translateY(0)} to{opacity:0;transform:scale(.75) translateY(20px)} }
+.cb-header {
+  padding: 18px 20px;
+  background: linear-gradient(135deg,rgba(124,92,252,.22),rgba(176,108,248,.12));
+  border-bottom: 1px solid var(--cb-border);
+  display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+}
+.cb-header-avatar {
+  width:40px;height:40px;border-radius:12px;
+  background:linear-gradient(135deg,var(--cb-accent),var(--cb-accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;box-shadow:0 4px 16px var(--cb-accent-glow);
+}
+.cb-header-info{flex:1;}
+.cb-header-name{font-size:14px;font-weight:700;letter-spacing:.02em;color:var(--cb-text);}
+.cb-header-status{font-size:11px;color:var(--cb-green);font-family:var(--cb-mono);display:flex;align-items:center;gap:5px;margin-top:2px;}
+.cb-status-dot{width:6px;height:6px;border-radius:50%;background:var(--cb-green);animation:cbPulse 2s infinite;}
+.cb-btn-close{background:none;border:none;color:var(--cb-text-muted);cursor:pointer;padding:6px;border-radius:8px;font-size:18px;line-height:1;transition:color .2s,background .2s;display:flex;align-items:center;}
+.cb-btn-close:hover{color:var(--cb-text);background:var(--cb-surface2);}
+.cb-progress-bar{height:2px;background:var(--cb-surface2);flex-shrink:0;overflow:hidden;}
+.cb-progress-fill{height:100%;background:linear-gradient(90deg,var(--cb-accent),var(--cb-accent2));transition:width .5s cubic-bezier(.4,0,.2,1);box-shadow:0 0 8px var(--cb-accent-glow);}
+.cb-progress-label{padding:6px 20px;font-size:10px;font-family:var(--cb-mono);color:var(--cb-text-muted);letter-spacing:.08em;background:rgba(0,0,0,.2);text-align:right;flex-shrink:0;text-transform:uppercase;}
+.cb-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px;scrollbar-width:thin;scrollbar-color:var(--cb-border2) transparent;}
+.cb-messages::-webkit-scrollbar{width:4px;}
+.cb-messages::-webkit-scrollbar-thumb{background:var(--cb-border2);border-radius:2px;}
+.cb-msg{display:flex;gap:10px;align-items:flex-end;animation:cbMsgIn .3s cubic-bezier(.34,1.4,.64,1) forwards;opacity:0;}
+@keyframes cbMsgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.cb-msg.cb-user{flex-direction:row-reverse;}
+.cb-msg-avatar{width:28px;height:28px;border-radius:8px;flex-shrink:0;background:linear-gradient(135deg,var(--cb-accent),var(--cb-accent2));display:flex;align-items:center;justify-content:center;font-size:12px;}
+.cb-msg.cb-user .cb-msg-avatar{background:linear-gradient(135deg,#2d2d3a,#3a3a50);font-size:13px;}
+.cb-msg-bubble{max-width:78%;padding:11px 15px;border-radius:16px 16px 16px 4px;background:var(--cb-surface2);border:1px solid var(--cb-border);font-size:13.5px;line-height:1.55;color:var(--cb-text);word-break:break-word;}
+.cb-msg.cb-user .cb-msg-bubble{border-radius:16px 16px 4px 16px;background:linear-gradient(135deg,rgba(124,92,252,.22),rgba(176,108,248,.15));border-color:rgba(124,92,252,.35);}
+.cb-msg-bubble ul{padding-left:18px;margin-top:4px;}
+.cb-msg-bubble ul li{margin-bottom:3px;color:var(--cb-text-muted);font-size:13px;}
+.cb-msg-bubble ul li::marker{color:var(--cb-accent);}
+.cb-msg-bubble strong{color:var(--cb-accent2);font-weight:600;}
+.cb-msg-bubble .cb-cid{font-family:var(--cb-mono);font-size:18px;font-weight:500;color:var(--cb-gold);letter-spacing:.05em;display:block;margin-top:6px;}
+.cb-msg-bubble .cb-success-check{color:var(--cb-green);font-size:22px;display:block;margin-bottom:4px;}
+.cb-typing-bubble{display:flex;gap:10px;align-items:flex-end;}
+.cb-typing-dots{padding:13px 16px;background:var(--cb-surface2);border:1px solid var(--cb-border);border-radius:16px 16px 16px 4px;display:flex;gap:5px;align-items:center;}
+.cb-typing-dots span{width:6px;height:6px;border-radius:50%;background:var(--cb-accent);animation:cbTyping 1.2s infinite;}
+.cb-typing-dots span:nth-child(2){animation-delay:.2s;}
+.cb-typing-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes cbTyping{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
+.cb-input-zone{padding:12px 16px 16px;border-top:1px solid var(--cb-border);background:rgba(0,0,0,.2);flex-shrink:0;display:flex;flex-direction:column;gap:10px;}
+.cb-btn-grid{display:flex;flex-wrap:wrap;gap:7px;}
+.cb-btn-option{padding:9px 15px;background:var(--cb-surface);border:1px solid var(--cb-border2);border-radius:50px;color:var(--cb-text);font-family:'Manrope',sans-serif;font-size:12.5px;font-weight:500;cursor:pointer;transition:all .2s;letter-spacing:.01em;}
+.cb-btn-option:hover{background:rgba(124,92,252,.18);border-color:var(--cb-accent);color:var(--cb-accent2);transform:translateY(-1px);}
+.cb-btn-option:active{transform:translateY(0);}
+.cb-input-row{display:flex;gap:8px;align-items:flex-end;}
+.cb-chat-input{flex:1;background:var(--cb-surface2);border:1px solid var(--cb-border2);border-radius:12px;padding:10px 14px;color:var(--cb-text);font-family:'Manrope',sans-serif;font-size:13.5px;outline:none;resize:none;min-height:44px;max-height:100px;transition:border-color .2s;line-height:1.5;}
+.cb-chat-input::placeholder{color:var(--cb-text-muted);}
+.cb-chat-input:focus{border-color:rgba(124,92,252,.5);}
+.cb-btn-send{width:44px;height:44px;flex-shrink:0;background:linear-gradient(135deg,var(--cb-accent),var(--cb-accent2));border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 16px var(--cb-accent-glow);}
+.cb-btn-send:hover{transform:scale(1.07);box-shadow:0 6px 20px var(--cb-accent-glow);}
+.cb-btn-send svg{width:18px;height:18px;fill:#fff;}
+.cb-file-upload-area{border:1.5px dashed var(--cb-border2);border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;color:var(--cb-text-muted);font-size:12.5px;}
+.cb-file-upload-area:hover{border-color:var(--cb-accent);background:rgba(124,92,252,.05);color:var(--cb-text);}
+.cb-file-upload-area input{display:none;}
+.cb-upload-icon{font-size:22px;margin-bottom:4px;}
+.cb-file-list{margin-top:8px;display:flex;flex-direction:column;gap:4px;}
+.cb-file-item{display:flex;align-items:center;gap:8px;background:var(--cb-surface2);border-radius:8px;padding:6px 10px;font-size:11.5px;color:var(--cb-text);font-family:var(--cb-mono);}
+.cb-file-icon{color:var(--cb-accent);}
+.cb-skip-link{text-align:center;font-size:11.5px;color:var(--cb-text-muted);cursor:pointer;text-decoration:underline;text-underline-offset:3px;transition:color .2s;display:block;}
+.cb-skip-link:hover{color:var(--cb-accent2);}
+.cb-input-error{font-size:11px;color:var(--cb-red);font-family:var(--cb-mono);padding:0 2px;}
+.cb-valid-badge{font-size:11px;color:var(--cb-green);font-family:var(--cb-mono);padding:0 2px;}
+.cb-chat-footer{padding:7px 16px;background:rgba(0,0,0,.3);border-top:1px solid var(--cb-border);text-align:center;font-family:var(--cb-mono);font-size:10px;color:var(--cb-text-muted);letter-spacing:.1em;text-transform:uppercase;flex-shrink:0;}
+.cb-chat-footer span{color:var(--cb-accent);}
+@media(max-width:500px){#chat-window{width:calc(100vw - 24px);left:12px;bottom:90px;}#chat-trigger{left:16px;bottom:20px;font-size:13px;padding:12px 18px;}}
+
+/* REVEAL */
+.rev{opacity:0;transform:translateY(36px);transition:all .7s cubic-bezier(.25,.46,.45,.94);}
+.rev.vis{opacity:1;transform:translateY(0);}
+.rd1{transition-delay:.1s;}.rd2{transition-delay:.2s;}.rd3{transition-delay:.3s;}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .hero{grid-template-columns:1fr;text-align:center;}
+  .hero-sub{margin:0 auto 2.4rem;}
+  .hero-btns{justify-content:center;}
+  .hero-right{height:380px;}
+  #about{grid-template-columns:1fr;}
+  .about-visual{height:300px;}
+  .contact-wrap{grid-template-columns:1fr;}
+  .port-grid{grid-template-columns:1fr 1fr;}
+  .port-item:nth-child(1){grid-column:1;grid-row:1/3;min-height:400px;}
+  .port-item:nth-child(4){grid-column:1/3;grid-row:3;}
+  .process-grid::before{display:none;}
+  .htag1,.htag2,.htag3{display:none;}
+}
+@media(max-width:600px){
+  .nav-links{display:none;}
+  .stats-bar{gap:1.8rem;}
+  .port-grid{grid-template-columns:1fr;}
+  .port-item:nth-child(1){grid-column:1;grid-row:auto;min-height:260px;}
+  .port-item:nth-child(4){grid-column:1;grid-row:auto;}
+  .form-row{grid-template-columns:1fr;}
+  .footer-top{flex-direction:column;}
+  .footer-bottom{flex-direction:column;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">DRT<span>-VERSE</span></div>
+  <div class="loader-tag">Your Vision. Our Verse.</div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+</div>
+
+<!-- SCROLL PROGRESS -->
+<div id="progress"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">DRT<span>-VERSE</span></a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#products">Products</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="theme-toggle" id="themeToggle" title="Toggle dark/light mode">
+      <span class="theme-icon sun">☀️</span>
+      <span class="theme-icon moon">🌙</span>
+    </div>
+    <a href="#contact" class="nav-btn">Get started</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid">
+    <svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice">
+      <defs><pattern id="grid" width="120" height="120" patternUnits="userSpaceOnUse"><path d="M 120 0 L 0 0 0 120" fill="none" stroke="rgba(109,58,238,0.2)" stroke-width="0.8"/></pattern></defs>
+      <rect width="1200" height="700" fill="url(#grid)"/>
+    </svg>
+  </div>
+  <div class="speckles"></div>
+
+  <div class="hero-left">
+    <div class="hero-badge"> AI-Powered Creative Studio</div>
+    <h1>Design that<br><span class="accent" id="typingText">Speaks</span><span class="typing-cursor"></span></h1>
+    <p class="hero-sub">Harness the power of AI-augmented design with DRT-VERSE — graphics, websites, apps, and presentations that define your brand.</p>
+    <div class="hero-btns">
+      <a href="#services" class="btn-primary">Explore Services</a>
+      <a href="#portfolio" class="btn-ghost">View Portfolio</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-right-inner">
+      <div class="light-beam"></div>
+      <div class="orbit"><div class="orbit-dot"></div></div>
+      <div class="orbit2"><div class="orbit2-dot"></div></div>
+      <div class="cube-scene">
+        <div class="cube">
+          <div class="cube-face face-front">Design</div>
+          <div class="cube-face face-back">Create</div>
+          <div class="cube-face face-left">Build</div>
+          <div class="cube-face face-right">Launch</div>
+          <div class="cube-face face-top"></div>
+          <div class="cube-face face-bottom"></div>
+        </div>
+        <div class="cube-shadow"></div>
+      </div>
+      <!-- Floating tags -->
+      <div class="hero-tag htag1">🎨 Graphic Design</div>
+      <div class="hero-tag htag2">🌐 Web Design</div>
+      <div class="hero-tag htag3">📱 App Design</div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-num">20+</div><div class="stat-label">Projects Done</div></div>
+  <div class="stat-item"><div class="stat-num">4</div><div class="stat-label">Core Services</div></div>
+  <div class="stat-item"><div class="stat-num">AI✦</div><div class="stat-label">Powered Workflow</div></div>
+  <div class="stat-item"><div class="stat-num">24h</div><div class="stat-label">Turnaround</div></div>
+</div>
+
+<!-- SERVICES -->
+<section id="services" class="pad">
+  <div class="rev">
+    <div class="section-eyebrow">What I Do</div>
+    <h2 class="sec-title">Services built for<br><em>impact & elegance</em></h2>
+    <p class="sec-sub">Every project is a universe of its own — designed with intent, crafted with AI.</p>
+  </div>
+  <div class="services-grid">
+    <div class="svc-card"><span class="svc-num">01</span><div class="svc-icon">🎨</div><h3>Graphics Design</h3><p>Logos, brand identities, social creatives and visual systems that make your brand unforgettable.</p><span class="svc-link">→ Branding & Identity</span></div>
+    <div class="svc-card"><span class="svc-num">02</span><div class="svc-icon">🌐</div><h3>Website Design</h3><p>Stunning responsive websites blending beautiful aesthetics with seamless user experience.</p><span class="svc-link">→ UI/UX & Web</span></div>
+    <div class="svc-card"><span class="svc-num">03</span><div class="svc-icon">📱</div><h3>App Design</h3><p>Intuitive mobile and web app interfaces designed to delight users and drive engagement.</p><span class="svc-link">→ Mobile & App</span></div>
+    <div class="svc-card"><span class="svc-num">04</span><div class="svc-icon">📊</div><h3>PPT Design</h3><p>Presentation decks that command attention — perfect for pitches, reports, and keynotes.</p><span class="svc-link">→ Presentations</span></div>
+  </div>
+</section>
+
+<!-- HOW I WORK -->
+<section id="process">
+  <div class="rev">
+    <div class="section-eyebrow">How I Work</div>
+    <h2 class="sec-title">Simple process,<br><em>extraordinary results</em></h2>
+    <p class="sec-sub">From first message to final delivery — a clear, collaborative journey every step of the way.</p>
+  </div>
+  <div class="process-grid">
+    <div class="proc-card"><div class="proc-num">01</div><h3>Discovery</h3><p>We start with a deep dive into your brand, goals, and vision to understand exactly what you need.</p></div>
+    <div class="proc-card"><div class="proc-num">02</div><h3>Strategy</h3><p>I plan the creative direction, select the right tools, and map out the design approach with AI.</p></div>
+    <div class="proc-card"><div class="proc-num">03</div><h3>Design</h3><p>Concepts are crafted with precision — blending creativity with AI-powered efficiency for fast results.</p></div>
+    <div class="proc-card"><div class="proc-num">04</div><h3>Deliver</h3><p>Final files delivered in your preferred format, with revisions until you're 100% satisfied.</p></div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio" class="pad">
+  <div class="port-head">
+    <div class="rev">
+      <div class="section-eyebrow">Portfolio</div>
+      <h2 class="sec-title">Work that <em>defines us</em></h2>
+    </div>
+  </div>
+
+  <!-- ── Graphics Design ── -->
+  <div class="port-category rev">
+    <div class="port-cat-header">
+      <span class="port-cat-title">Graphics Design Projects</span>
+      <button class="port-view-all"><div class="va-circle">→</div> View all</button>
+    </div>
+    <div class="port-grid-portrait">
+      <!-- Card 1: replace src="" with your image path to show image -->
+      <div class="port-card-portrait">
+        <div class="port-card-inner pg1">
+          <img src="graphics1.png" alt="Logo Design"/>
+          🎨
+        </div>
+        <div class="port-card-overlay"><div><h5>Headphones</h5><span>SONY</span></div></div>
+      </div>
+      <!-- Card 2 -->
+      <div class="port-card-portrait">
+        <div class="port-card-inner pg2">
+          <img src="graphics2.png" alt="Social Media Kit"/>
+          ✦
+        </div>
+        <div class="port-card-overlay"><div><h5>GT3-RS</h5><span>PORCHE</span></div></div>
+      </div>
+      <!-- Card 3 -->
+      <div class="port-card-portrait">
+        <div class="port-card-inner pg3">
+          <img src="graphics3.png" alt="Brand Guidelines"/>
+          ◈
+        </div>
+        <div class="port-card-overlay"><div><h5>HOODIE</h5><span>Black Colour</span></div></div>
+      </div>
+      <!-- Card 4 -->
+      <div class="port-card-portrait">
+        <div class="port-card-inner pg4">
+          <img src="graphics4.png" alt="Poster Design"/>
+          ⬡
+        </div>
+        <div class="port-card-overlay"><div><h5>Huracan</h5><span>Lamborgini</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Website Design ── -->
+  <div class="port-category rev">
+    <div class="port-cat-header">
+      <span class="port-cat-title">Website Design Projects</span>
+      <button class="port-view-all"><div class="va-circle">→</div> View all</button>
+    </div>
+    <div class="port-grid-landscape">
+      <!-- Card 1 -->
+      <div class="port-card-landscape">
+        <div class="port-card-inner pg5">
+          <!-- <img src="your-image.jpg" alt="SaaS Dashboard"/> -->
+          🌐
+        </div>
+        <div class="port-card-overlay"><div><h5>SaaS Dashboard UI</h5><span>Website Design</span></div></div>
+      </div>
+      <!-- Card 2 -->
+      <div class="port-card-landscape">
+        <div class="port-card-inner pg6">
+          <!-- <img src="your-image.jpg" alt="E-commerce Site"/> -->
+          🛒
+        </div>
+        <div class="port-card-overlay"><div><h5>E-Commerce Store</h5><span>Website Design</span></div></div>
+      </div>
+      <!-- Card 3 -->
+      <div class="port-card-landscape">
+        <div class="port-card-inner pg7">
+          <!-- <img src="your-image.jpg" alt="Portfolio Site"/> -->
+          ◎
+        </div>
+        <div class="port-card-overlay"><div><h5>Portfolio Website</h5><span>Website Design</span></div></div>
+      </div>
+    </div>
+    <div class="port-dots">
+      <div class="port-dot active"></div>
+      <div class="port-dot"></div>
+      <div class="port-dot"></div>
+    </div>
+  </div>
+
+  <!-- ── App Design ── -->
+  <div class="port-category rev">
+    <div class="port-cat-header">
+      <span class="port-cat-title">App Design Projects</span>
+      <button class="port-view-all"><div class="va-circle">→</div> View all</button>
+    </div>
+    <div class="port-grid-circles">
+      <!-- Circle 1 -->
+      <div class="port-card-circle">
+        <div class="port-circle-img pg1">
+          <div class="port-card-inner" style="font-size:1.6rem">
+            <!-- <img src="your-app-icon.jpg" alt="App Name"/> -->
+            📱
+          </div>
+        </div>
+        <div class="port-circle-label">App Name<span>Description</span></div>
+      </div>
+      <!-- Circle 2 -->
+      <div class="port-card-circle">
+        <div class="port-circle-img pg5">
+          <div class="port-card-inner" style="font-size:1.6rem">
+            <!-- <img src="your-app-icon.jpg" alt="App Name"/> -->
+            💜
+          </div>
+        </div>
+        <div class="port-circle-label">App Name<span>Description</span></div>
+      </div>
+      <!-- Circle 3 -->
+      <div class="port-card-circle">
+        <div class="port-circle-img pg3">
+          <div class="port-card-inner" style="font-size:1.6rem">
+            <!-- <img src="your-app-icon.jpg" alt="App Name"/> -->
+            🎯
+          </div>
+        </div>
+        <div class="port-circle-label">App Name<span>Description</span></div>
+      </div>
+      <!-- Circle 4 -->
+      <div class="port-card-circle">
+        <div class="port-circle-img pg6">
+          <div class="port-card-inner" style="font-size:1.6rem">
+            <!-- <img src="your-app-icon.jpg" alt="App Name"/> -->
+            🚀
+          </div>
+        </div>
+        <div class="port-circle-label">App Name<span>Description</span></div>
+      </div>
+      <!-- Circle 5 -->
+      <div class="port-card-circle">
+        <div class="port-circle-img pg2">
+          <div class="port-card-inner" style="font-size:1.6rem">
+            <!-- <img src="your-app-icon.jpg" alt="App Name"/> -->
+            ⚡
+          </div>
+        </div>
+        <div class="port-circle-label">App Name<span>Description</span></div>
+      </div>
+      <!-- Circle 6 -->
+      <div class="port-card-circle">
+        <div class="port-circle-img pg8">
+          <div class="port-card-inner" style="font-size:1.6rem">
+            <!-- <img src="your-app-icon.jpg" alt="App Name"/> -->
+            🎨
+          </div>
+        </div>
+        <div class="port-circle-label">App Name<span>Description</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PPT Templates ── -->
+  <div class="port-category rev">
+    <div class="port-cat-header">
+      <span class="port-cat-title">PPT Templates</span>
+      <button class="port-view-all"><div class="va-circle">→</div> View all</button>
+    </div>
+    <div class="port-grid-ppt">
+      <!-- Card 1 -->
+      <div class="port-card-ppt">
+        <div class="port-card-inner pg7">
+          <!-- <img src="your-ppt-thumb.jpg" alt="Investor Deck"/> -->
+          📊
+        </div>
+        <div class="port-card-overlay"><div><h5>Investor Pitch Deck</h5><span>PPT Design</span></div></div>
+      </div>
+      <!-- Card 2 -->
+      <div class="port-card-ppt">
+        <div class="port-card-inner pg4">
+          <!-- <img src="your-ppt-thumb.jpg" alt="Business Report"/> -->
+          📋
+        </div>
+        <div class="port-card-overlay"><div><h5>Business Report</h5><span>PPT Design</span></div></div>
+      </div>
+      <!-- Card 3 -->
+      <div class="port-card-ppt">
+        <div class="port-card-inner pg9">
+          <!-- <img src="your-ppt-thumb.jpg" alt="Startup Deck"/> -->
+          🏆
+        </div>
+        <div class="port-card-overlay"><div><h5>Startup Deck</h5><span>PPT Design</span></div></div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- PRODUCTS -->
+<section id="products" class="pad">
+  <div class="rev">
+    <div class="section-eyebrow">Shop</div>
+    <h2 class="sec-title">Ready-made <em>design products</em></h2>
+    <p class="sec-sub">Premium templates and design assets — crafted once, yours forever.</p>
+  </div>
+  <div class="prod-grid">
+    <div class="prod-card"><div class="prod-thumb pt1">🎨</div><div class="prod-body"><h4>Brand Kit Template</h4><p>Complete brand identity pack with logo, colors & typography.</p><div class="prod-foot"><span class="price">₹------</span><button class="btn-buy">Upcoming</button></div></div></div>
+    <div class="prod-card"><div class="prod-thumb pt2">🌐</div><div class="prod-body"><h4>Portfolio Website UI</h4><p>Figma-ready premium portfolio template with animations.</p><div class="prod-foot"><span class="price">₹------</span><button class="btn-buy">Upcoming</button></div></div></div>
+    <div class="prod-card"><div class="prod-thumb pt3">📱</div><div class="prod-body"><h4>App UI Kit</h4><p>50+ screens mobile UI kit for iOS and Android apps.</p><div class="prod-foot"><span class="price">₹------</span><button class="btn-buy">Upcoming</button></div></div></div>
+    <div class="prod-card"><div class="prod-thumb pt4">📊</div><div class="prod-body"><h4>Pitch Deck Pack</h4><p>20-slide investor pitch deck — fully editable template.</p><div class="prod-foot"><span class="price">₹------</span><button class="btn-buy">Upcoming</button></div></div></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-visual rev">
+    <div class="avc-main"><span class="avc-logo-text">DRT</span></div>
+    <div class="avc-stats">
+      <div class="as"><div class="as-n">20+</div><div class="as-l">Projects Delivered</div></div>
+      <div class="as"><div class="as-n">4</div><div class="as-l">Core Services</div></div>
+      <div class="as"><div class="as-n">AI ✦</div><div class="as-l">Powered Workflow</div></div>
+    </div>
+    <div class="avc-dot"></div>
+  </div>
+  <div class="about-text rev rd1">
+    <div class="section-eyebrow">About</div>
+    <h2 class="sec-title">A creative universe<br>built <em>for you</em></h2>
+    <p class="sec-sub">DRT-VERSE is a one-person creative studio where design meets intelligence. Every pixel, every slide, every screen is crafted with purpose — and powered by cutting-edge AI.</p>
+    <div class="about-feats">
+      <div class="af"><div class="af-dot"></div><p><strong>AI-Augmented Design</strong> — Faster turnaround without compromising quality.</p></div>
+      <div class="af"><div class="af-dot"></div><p><strong>End-to-End Creative</strong> — From branding to web to app — everything under one roof.</p></div>
+      <div class="af"><div class="af-dot"></div><p><strong>Student-Built, Pro Quality</strong> — Fresh perspective + technical discipline = outstanding results.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL MEDIA -->
+<section id="social">
+  <div class="rev">
+    <div class="section-eyebrow">Connect</div>
+    <h2 class="sec-title">Find me on <em>social media</em></h2>
+    <p class="sec-sub">Follow my journey, see my latest work, and connect with DRT-VERSE across platforms.</p>
+  </div>
+  <div class="social-grid">
+    <a href="https://www.instagram.com/drtverse.og?igsh=MXN2ZG1zMHdjcjY5MA==" class="soc-card"><span class="soc-icon">📸</span> Instagram</a>
+    <a href="#" class="soc-card"><span class="soc-icon">💼</span> LinkedIn</a>
+    <a href="https://youtube.com/@drtverse?si=8MB6wV8oqN1_KQxK" class="soc-card"><span class="soc-icon">▶️</span> YouTube</a>
+    <a href="https:/t.me/drt_verse" class="soc-card"><span class="soc-icon">ᯓ➤</span> Telegram</a>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="rev faq-header">
+  <div class="section-eyebrow faq-eyebrow">FAQ</div>
+  <h2 class="sec-title">Frequently asked <em>questions</em></h2>
+  <p class="sec-sub">Everything you need to know before we start working together.</p>
+  </div>
+  <div class="faq-wrap">
+    <div class="faq-item">
+      <div class="faq-q"><h4>How long does a project take?</h4><button class="faq-icon">+</button></div>
+      <div class="faq-a">Timelines depend on the project scope. A logo can be done in 1–2 days, a full website in 5–10 days, and a complete brand identity in 1–2 weeks. I always give you a clear timeline before we begin.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><h4>Do you work with AI tools?</h4><button class="faq-icon">+</button></div>
+      <div class="faq-a">Yes! DRT-VERSE uses AI-powered tools to enhance speed and quality without losing the human creative touch. This means faster delivery, better results, and more value for your money.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><h4>How many revisions do I get?</h4><button class="faq-icon">+</button></div>
+      <div class="faq-a">Every project includes at least 2–3 rounds of revisions. I work until you're 100% happy with the result. Additional revisions beyond the scope can be arranged at a small fee.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><h4>What file formats will I receive?</h4><button class="faq-icon">+</button></div>
+      <div class="faq-a">You'll get all standard formats — PNG, JPG, SVG, PDF, Figma source files, and more — depending on the service. Everything you need to use your design immediately.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><h4>How do I pay?</h4><button class="faq-icon">+</button></div>
+      <div class="faq-a">Payment is accepted via UPI, bank transfer, or other digital methods. Typically 50% upfront and 50% on delivery. For product purchases, full payment is required at checkout.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="rev" style="text-align:center">
+    <div class="section-eyebrow" style="justify-content:center">Contact</div>
+    <h2 class="sec-title">Let's build something <em>extraordinary</em></h2>
+    <p class="sec-sub" style="margin:0 auto 2.5rem">Whether you need a brand identity, a website, an app design, or a killer pitch deck — I'm here to bring your vision to life.</p>
+  </div>
+  <div class="ci rev rd1" style="max-width:540px;margin:0 auto;text-align:center">
+    <div class="ci-detail" style="align-items:center">
+      <div class="ci-item"><div class="ci-icon">✉️</div><span>drtverse.og@gmail.com</span></div>
+      <div class="ci-item"><div class="ci-icon">📍</div><span>Maharashtra, India</span></div>
+      <div class="ci-item"><div class="ci-icon">💬</div><span>WhatsApp: +91 7769983767</span></div>
+      <div class="ci-item"><div class="ci-icon">⏱️</div><span>Response within 24 hours</span></div>
+    </div>
+    <div style="margin-top:2rem">
+      <button onclick="cbOpenChat()" style="background:var(--purple);color:white;border:none;padding:.9rem 2.2rem;border-radius:100px;font-size:.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(109,58,238,.35);transition:all .3s;font-family:'Manrope',sans-serif;" onmouseover="this.style.background='#3b0fa0';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--purple)';this.style.transform='translateY(0)'">
+        💬 Start Your Project
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <span class="fl">DRT<span>-VERSE</span></span>
+      <div class="footer-tagline">Your Vision. Our Verse.</div>
+    </div>
+    <div class="footer-links-col">
+      <h5>Services</h5>
+      <ul>
+        <li><a href="#services">Graphics Design</a></li>
+        <li><a href="#services">Website Design</a></li>
+        <li><a href="#services">App Design</a></li>
+        <li><a href="#services">PPT Design</a></li>
+      </ul>
+    </div>
+    <div class="footer-links-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#process">How I Work</a></li>
+        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="footer-links-col">
+      <h5>Connect</h5>
+      <ul>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">Behance</a></li>
+        <li><a href="#">LinkedIn</a></li>
+        <li><a href="#">WhatsApp</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 DRT-VERSE. All rights reserved.</p>
+    <p>Made in Maharashtra, India</p>
+  </div>
+</footer>
+
+<!-- FLOATING BUTTONS -->
+<div class="float-btns">
+  <button class="float-btn top-btn" id="topBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+</div>
+
+<script>
+// LOADER
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hide');
+    setTimeout(() => document.getElementById('loader').style.display = 'none', 600);
+  }, 2800);
+});
+
+// SCROLL PROGRESS
+window.addEventListener('scroll', () => {
+  const scrolled = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  document.getElementById('progress').style.width = scrolled + '%';
+  // Back to top button
+  const topBtn = document.getElementById('topBtn');
+  window.scrollY > 400 ? topBtn.classList.add('show') : topBtn.classList.remove('show');
+});
+
+// DARK / LIGHT TOGGLE
+const toggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+const saved = localStorage.getItem('drt-theme') || 'light';
+html.setAttribute('data-theme', saved);
+toggle.addEventListener('click', () => {
+  const current = html.getAttribute('data-theme');
+  const next = current === 'light' ? 'dark' : 'light';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('drt-theme', next);
+});
+
+// TYPING EFFECT
+const words = ['Speaks', 'Inspires', 'Defines', 'Converts', 'Stands Out'];
+let wi = 0, ci = 0, deleting = false;
+const el = document.getElementById('typingText');
+function type() {
+  const word = words[wi];
+  if (!deleting) {
+    el.textContent = word.slice(0, ++ci);
+    if (ci === word.length) { deleting = true; setTimeout(type, 1800); return; }
+  } else {
+    el.textContent = word.slice(0, --ci);
+    if (ci === 0) { deleting = false; wi = (wi + 1) % words.length; }
+  }
+  setTimeout(type, deleting ? 60 : 100);
+}
+setTimeout(type, 3200);
+
+// INTERSECTION OBSERVER
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.rev,.svc-card,.port-card-portrait,.port-card-landscape,.port-card-circle,.port-card-ppt,.prod-card,.proc-card,.soc-card,.faq-item').forEach(el => io.observe(el));
+
+// Stagger
+document.querySelectorAll('.svc-card').forEach((c,i) => { c.style.transitionDelay = (i*.1)+'s'; c.style.transition = `all .6s cubic-bezier(.25,.46,.45,.94) ${i*.1}s`; });
+document.querySelectorAll('.port-card-portrait,.port-card-landscape,.port-card-ppt').forEach((c,i) => { c.style.transition = `transform .35s ease,box-shadow .35s,opacity .5s ease ${i*.08}s`; });
+document.querySelectorAll('.prod-card').forEach((c,i) => { c.style.transition = `all .6s ease ${i*.1}s`; });
+document.querySelectorAll('.proc-card').forEach((c,i) => { c.style.transitionDelay = (i*.1)+'s'; });
+document.querySelectorAll('.soc-card').forEach((c,i) => { c.style.transitionDelay = (i*.07)+'s'; });
+document.querySelectorAll('.faq-item').forEach((c,i) => { c.style.transitionDelay = (i*.07)+'s'; });
+
+// FAQ ACCORDION
+document.querySelectorAll('.faq-item').forEach(item => {
+  item.querySelector('.faq-q').addEventListener('click', () => {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+// NAV scroll
+const nav = document.querySelector('nav');
+window.addEventListener('scroll', () => {
+  nav.style.background = window.scrollY > 60
+    ? (html.getAttribute('data-theme') === 'dark' ? 'rgba(13,10,24,0.85)' : 'rgba(238,234,244,0.75)')
+    : 'var(--nav-bg)';
+});
+</script>
+<!-- ─── DRT-VERSE CHATBOT ─── -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<!-- Chatbot Trigger Button -->
+<button id="chat-trigger" onclick="cbOpenChat()">
+  <div class="cb-trigger-dot"></div>
+  💬 Start Your Project
+</button>
+
+<!-- Chat Window -->
+<div id="chat-window">
+  <div class="cb-header">
+    <div class="cb-header-avatar">🚀</div>
+    <div class="cb-header-info">
+      <div class="cb-header-name">DRT-VERSE Assistant</div>
+      <div class="cb-header-status"><div class="cb-status-dot"></div> Online — Ready to help</div>
+    </div>
+    <button class="cb-btn-close" onclick="cbCloseChat()" title="Close">✕</button>
+  </div>
+  <div class="cb-progress-bar"><div class="cb-progress-fill" id="cb-progress-fill" style="width:0%"></div></div>
+  <div class="cb-progress-label" id="cb-progress-label">Initializing...</div>
+  <div class="cb-messages" id="cb-messages"></div>
+  <div class="cb-input-zone" id="cb-input-zone"></div>
+  <div class="cb-chat-footer">Powered by <span>DRT-VERSE</span> • Secure & Private</div>
+</div>
+
+<script>
+// ─── CHATBOT CONFIG ──────────────────────────────
+const CB_CONFIG = {
+  TELEGRAM_BOT_TOKEN: '8813801051:AAGK9icn8hHRtFsrhr3lt10SSk2ep52bOF8',
+  TELEGRAM_CHAT_ID:   '7268916876',
+  BACKEND_URL: 'https://your-drtverse-api.onrender.com',
+  USE_BACKEND: false,
+};
+
+// ─── STATE ───────────────────────────────────────
+let cbState = { step: 0, data: {}, files: [], clientId: '', lastMsgTime: 0 };
+const CB_STEPS = ['welcome','service','name','email','phone','project','budget','deadline','upload','done'];
+const CB_TOTAL = CB_STEPS.length;
+let cbTypingTimeout = null;
+
+// ─── OPEN / CLOSE ────────────────────────────────
+function cbOpenChat() {
+  document.getElementById('chat-trigger').classList.add('hidden');
+  const win = document.getElementById('chat-window');
+  win.style.display = 'flex';
+  win.classList.remove('cb-closing');
+  win.classList.add('cb-open');
+  if (cbState.step === 0) cbStartFlow();
+}
+function cbCloseChat() {
+  const win = document.getElementById('chat-window');
+  win.classList.add('cb-closing');
+  setTimeout(() => {
+    win.style.display = 'none';
+    win.classList.remove('cb-open','cb-closing');
+    document.getElementById('chat-trigger').classList.remove('hidden');
+  }, 250);
+}
+
+// ─── FLOW ────────────────────────────────────────
+function cbStartFlow() {
+  cbState.clientId = 'DRT-' + Math.floor(1000 + Math.random() * 9000);
+  cbShowStep('welcome');
+}
+function cbShowStep(step) {
+  cbState.step = CB_STEPS.indexOf(step);
+  cbUpdateProgress();
+  const fn = {
+    welcome: cbStepWelcome, service: cbStepService, name: cbStepName,
+    email: cbStepEmail, phone: cbStepPhone, project: cbStepProject,
+    budget: cbStepBudget, deadline: cbStepDeadline, upload: cbStepUpload, done: cbStepDone
+  };
+  if (fn[step]) fn[step]();
+}
+function cbUpdateProgress() {
+  const pct = Math.round((cbState.step / (CB_TOTAL - 1)) * 100);
+  document.getElementById('cb-progress-fill').style.width = pct + '%';
+  const labels = {0:'Welcome',1:'Select Service',2:'Your Name',3:'Email',4:'Phone',5:'Project Details',6:'Budget',7:'Deadline',8:'File Upload',9:'Done 🎉'};
+  document.getElementById('cb-progress-label').textContent = `Step ${cbState.step+1} of ${CB_TOTAL} — ${labels[cbState.step]||''}`;
+}
+
+// ─── STEPS ───────────────────────────────────────
+function cbStepWelcome() {
+  cbTypeBot(`👋 <strong>Welcome to DRT-VERSE!</strong><br><br>We craft digital excellence in:<br><ul>
+    <li>🌐 Website Development</li><li>🎨 Graphic Design</li>
+    <li>📱 App Development </li><li>📊 PPT Design</li>
+  </ul><br>Let's discuss your project 🚀`, () => {
+    cbSetButtons([{ label: '→ Let\'s Go!', action: () => cbShowStep('service') }]);
+  });
+}
+function cbStepService() {
+  cbTypeBot('Which service are you looking for?', () => {
+    cbSetButtons([
+      { label: '🌐 Website Development', action: () => cbSelectService('Website Development') },
+      { label: '🎨 Graphic Design',       action: () => cbSelectService('Graphic Design') },
+      { label: '📱 App Development',         action: () => cbSelectService('App Development') },
+      { label: '📊 PPT Design',             action: () => cbSelectService('PPT Design') },
+    ]);
+  });
+}
+function cbSelectService(s) { cbState.data.service = s; cbAddUserMsg(s); cbShowStep('name'); }
+function cbStepName() {
+  cbTypeBot("What's your <strong>full name</strong>?", () => {
+    cbSetInputText('e.g. Rahul Sharma', val => {
+      if (val.trim().length < 2) return 'Please enter a valid name.';
+      cbState.data.name = val.trim(); cbAddUserMsg(val.trim()); cbShowStep('email');
+    });
+  });
+}
+function cbStepEmail() {
+  cbTypeBot("Your <strong>email address</strong>?", () => {
+    cbSetInputText('e.g. rahul@gmail.com', val => {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim())) return 'Please enter a valid email address.';
+      cbState.data.email = val.trim(); cbAddUserMsg(val.trim()); cbShowStep('phone');
+    });
+  });
+}
+function cbStepPhone() {
+  cbTypeBot("Your <strong>Phone / WhatsApp</strong> number?", () => {
+    cbSetInputText('e.g. 9876543210', val => {
+      const c = val.replace(/\s/g,'');
+      if (!/^[6-9]\d{9}$/.test(c) && !/^\+?[\d\s\-]{8,15}$/.test(c)) return 'Please enter a valid 10-digit phone number.';
+      cbState.data.phone = c; cbAddUserMsg(c); cbShowStep('project');
+    });
+  });
+}
+function cbStepProject() {
+  cbTypeBot("Tell us about your <strong>project</strong>. What do you need?", () => {
+    cbSetInputText('Describe your project...', val => {
+      if (val.trim().length < 10) return 'Please describe your project in a bit more detail.';
+      cbState.data.project = val.trim(); cbAddUserMsg(val.trim()); cbShowStep('budget');
+    });
+  });
+}
+function cbStepBudget() {
+  cbTypeBot("What's your <strong>approximate budget</strong>?", () => {
+    cbSetButtons([
+      { label: '< ₹10,000',         action: () => { cbState.data.budget='< ₹10,000'; cbAddUserMsg('< ₹10,000'); cbShowStep('deadline'); } },
+      { label: '₹10K – ₹30K',      action: () => { cbState.data.budget='₹10K – ₹30K'; cbAddUserMsg('₹10K – ₹30K'); cbShowStep('deadline'); } },
+      { label: '₹30K – ₹1L',       action: () => { cbState.data.budget='₹30K – ₹1L'; cbAddUserMsg('₹30K – ₹1L'); cbShowStep('deadline'); } },
+      { label: '₹1L+',             action: () => { cbState.data.budget='₹1L+'; cbAddUserMsg('₹1L+'); cbShowStep('deadline'); } },
+      { label: '✏️ Custom Amount', action: () => cbSetInputText('Enter your budget...', val => { if(!val.trim()) return 'Please enter a budget.'; cbState.data.budget=val.trim(); cbAddUserMsg(val.trim()); cbShowStep('deadline'); }) },
+    ]);
+  });
+}
+function cbStepDeadline() {
+  cbTypeBot("What's your <strong>expected deadline</strong>?", () => {
+    cbSetButtons([
+      { label: '⚡ Urgent (< 7 days)', action: () => { cbState.data.deadline='< 7 Days (Urgent)'; cbAddUserMsg('< 7 Days (Urgent)'); cbShowStep('upload'); } },
+      { label: '📅 2 Weeks',          action: () => { cbState.data.deadline='2 Weeks'; cbAddUserMsg('2 Weeks'); cbShowStep('upload'); } },
+      { label: '🗓️ 1 Month',          action: () => { cbState.data.deadline='1 Month'; cbAddUserMsg('1 Month'); cbShowStep('upload'); } },
+      { label: '🌿 Flexible',         action: () => { cbState.data.deadline='Flexible'; cbAddUserMsg('Flexible'); cbShowStep('upload'); } },
+      { label: '✏️ Custom Date',      action: () => cbSetInputText('Enter deadline...', val => { if(!val.trim()) return 'Please enter a deadline.'; cbState.data.deadline=val.trim(); cbAddUserMsg(val.trim()); cbShowStep('upload'); }) },
+    ]);
+  });
+}
+function cbStepUpload() {
+  cbTypeBot("📎 <strong>Upload any reference files</strong> — logos, images, PDFs, mockups.<br><span style='color:var(--cb-text-muted);font-size:12px;'>This is optional but helps us understand your vision.</span>", () => {
+    cbSetFileUpload();
+  });
+}
+function cbStepDone() {
+  cbTypeBot(`<span class="cb-success-check">✅</span>
+    <strong>Inquiry submitted successfully!</strong><br><br>
+    <strong>Project ID:</strong><span class="cb-cid">${cbState.clientId}</span>
+    Our team will contact you shortly on <strong>${cbState.data.phone}</strong>.<br><br>
+    Thank you for choosing <strong>DRT-VERSE</strong> 🚀`, () => {
+    cbSetButtons([{ label: '🔁 Submit Another Inquiry', action: () => {
+      cbState = { step:0, data:{}, files:[], clientId:'', lastMsgTime:0 };
+      document.getElementById('cb-messages').innerHTML = '';
+      document.getElementById('cb-input-zone').innerHTML = '';
+      cbStartFlow();
+    }}]);
+  });
+  cbSendToTelegram();
+}
+
+// ─── TELEGRAM ────────────────────────────────────
+async function cbSendToTelegram() {
+  const d = cbState.data;
+  const msg = `🚨 *NEW CLIENT INQUIRY — ${cbState.clientId}*\n\n👤 *Name:* ${d.name}\n📧 *Email:* ${d.email}\n📱 *Phone:* ${d.phone}\n🎯 *Service:* ${d.service}\n📝 *Project:* ${d.project}\n💰 *Budget:* ${d.budget}\n⏳ *Deadline:* ${d.deadline}\n📎 *Files:* ${cbState.files.length > 0 ? cbState.files.map(f=>f.name).join(', ') : 'None'}\n\n_Submitted via DRT\\-VERSE Website_`;
+  if (CB_CONFIG.USE_BACKEND) {
+    try {
+      const form = new FormData();
+      form.append('clientId', cbState.clientId);
+      form.append('data', JSON.stringify(d));
+      cbState.files.forEach(f => form.append('files', f));
+      await fetch(`${CB_CONFIG.BACKEND_URL}/api/inquiry`, { method:'POST', body:form });
+    } catch(e) { console.error('Backend error:', e); }
+  } else {
+    try {
+      await fetch(`https://api.telegram.org/bot${CB_CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ chat_id: CB_CONFIG.TELEGRAM_CHAT_ID, text: msg, parse_mode:'Markdown' })
+      });
+      for (const file of cbState.files) {
+        const fd = new FormData();
+        fd.append('chat_id', CB_CONFIG.TELEGRAM_CHAT_ID);
+        fd.append('document', file);
+        fd.append('caption', `📎 From ${cbState.clientId} — ${d.name}`);
+        await fetch(`https://api.telegram.org/bot${CB_CONFIG.TELEGRAM_BOT_TOKEN}/sendDocument`, { method:'POST', body:fd });
+      }
+    } catch(e) { console.error('Telegram error:', e); }
+  }
+}
+
+// ─── UI HELPERS ──────────────────────────────────
+function cbTypeBot(html, callback, delay=900) {
+  const msgs = document.getElementById('cb-messages');
+  const zone = document.getElementById('cb-input-zone');
+  zone.innerHTML = '';
+  const typing = document.createElement('div');
+  typing.className = 'cb-typing-bubble';
+  typing.innerHTML = `<div class="cb-msg-avatar">🚀</div><div class="cb-typing-dots"><span></span><span></span><span></span></div>`;
+  msgs.appendChild(typing);
+  cbScrollBottom();
+  clearTimeout(cbTypingTimeout);
+  cbTypingTimeout = setTimeout(() => {
+    msgs.removeChild(typing);
+    cbAddBotMsg(html);
+    if (callback) callback();
+  }, delay);
+}
+function cbAddBotMsg(html) {
+  const msgs = document.getElementById('cb-messages');
+  const el = document.createElement('div');
+  el.className = 'cb-msg cb-bot';
+  el.innerHTML = `<div class="cb-msg-avatar">🚀</div><div class="cb-msg-bubble">${html}</div>`;
+  msgs.appendChild(el);
+  cbScrollBottom();
+}
+function cbAddUserMsg(text) {
+  const msgs = document.getElementById('cb-messages');
+  const el = document.createElement('div');
+  el.className = 'cb-msg cb-user';
+  el.innerHTML = `<div class="cb-msg-avatar">👤</div><div class="cb-msg-bubble">${text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+  msgs.appendChild(el);
+  cbScrollBottom();
+}
+function cbScrollBottom() {
+  const msgs = document.getElementById('cb-messages');
+  setTimeout(() => msgs.scrollTop = msgs.scrollHeight, 50);
+}
+function cbSetButtons(buttons) {
+  const zone = document.getElementById('cb-input-zone');
+  zone.innerHTML = '';
+  const grid = document.createElement('div');
+  grid.className = 'cb-btn-grid';
+  buttons.forEach(b => {
+    const btn = document.createElement('button');
+    btn.className = 'cb-btn-option';
+    btn.textContent = b.label;
+    btn.onclick = () => {
+      const now = Date.now();
+      if (now - cbState.lastMsgTime < 500) return;
+      cbState.lastMsgTime = now;
+      b.action();
+    };
+    grid.appendChild(btn);
+  });
+  zone.appendChild(grid);
+}
+function cbSetInputText(placeholder, onSubmit) {
+  const zone = document.getElementById('cb-input-zone');
+  zone.innerHTML = '';
+  const errorDiv = document.createElement('div');
+  errorDiv.className = 'cb-input-error';
+  const row = document.createElement('div');
+  row.className = 'cb-input-row';
+  const ta = document.createElement('textarea');
+  ta.className = 'cb-chat-input';
+  ta.placeholder = placeholder;
+  ta.rows = 1;
+  ta.addEventListener('input', () => { ta.style.height='auto'; ta.style.height=Math.min(ta.scrollHeight,100)+'px'; errorDiv.textContent=''; });
+  const sendBtn = document.createElement('button');
+  sendBtn.className = 'cb-btn-send';
+  sendBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>`;
+  function submit() {
+    const now = Date.now();
+    if (now - cbState.lastMsgTime < 400) return;
+    const val = ta.value.trim();
+    if (!val) { errorDiv.textContent = 'This field cannot be empty.'; return; }
+    const err = onSubmit(val);
+    if (err) { errorDiv.textContent = '⚠ ' + err; ta.focus(); }
+    else { cbState.lastMsgTime = now; }
+  }
+  sendBtn.onclick = submit;
+  ta.addEventListener('keydown', e => { if (e.key==='Enter'&&!e.shiftKey) { e.preventDefault(); submit(); } });
+  row.appendChild(ta);
+  row.appendChild(sendBtn);
+  zone.appendChild(errorDiv);
+  zone.appendChild(row);
+  setTimeout(() => ta.focus(), 100);
+}
+function cbSetFileUpload() {
+  const zone = document.getElementById('cb-input-zone');
+  zone.innerHTML = '';
+  const area = document.createElement('div');
+  area.className = 'cb-file-upload-area';
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.multiple = true;
+  inp.accept = 'image/*,.pdf,.ai,.psd,.svg,.zip';
+  const icon = document.createElement('div');
+  icon.className = 'cb-upload-icon'; icon.textContent = '📎';
+  const lbl = document.createElement('div');
+  lbl.textContent = 'Click to upload files (Images, PDFs, Logos, References)';
+  const fileList = document.createElement('div');
+  fileList.className = 'cb-file-list';
+  inp.addEventListener('change', () => {
+    cbState.files = Array.from(inp.files);
+    fileList.innerHTML = '';
+    cbState.files.forEach(f => {
+      const item = document.createElement('div');
+      item.className = 'cb-file-item';
+      const sz = f.size < 1048576 ? (f.size/1024).toFixed(1)+' KB' : (f.size/1048576).toFixed(1)+' MB';
+      item.innerHTML = `<span class="cb-file-icon">📄</span>${f.name.replace(/</g,'&lt;')} <span style="color:var(--cb-text-muted);margin-left:auto">${sz}</span>`;
+      fileList.appendChild(item);
+    });
+    if (cbState.files.length > 0) lbl.textContent = `${cbState.files.length} file(s) selected ✅`;
+  });
+  area.appendChild(inp); area.appendChild(icon); area.appendChild(lbl); area.appendChild(fileList);
+  area.addEventListener('click', () => inp.click());
+  const btnRow = document.createElement('div');
+  btnRow.className = 'cb-btn-grid';
+  const btnNext = document.createElement('button');
+  btnNext.className = 'cb-btn-option';
+  btnNext.textContent = '✅ Submit Inquiry';
+  btnNext.onclick = () => cbShowStep('done');
+  const skip = document.createElement('span');
+  skip.className = 'cb-skip-link';
+  skip.textContent = 'Skip — submit without files';
+  skip.onclick = () => cbShowStep('done');
+  btnRow.appendChild(btnNext);
+  zone.appendChild(area); zone.appendChild(btnRow); zone.appendChild(skip);
+}
+</script>
+
+</body>
